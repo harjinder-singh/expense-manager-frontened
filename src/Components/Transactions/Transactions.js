@@ -3,6 +3,9 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 import TransactionList from './TransactionList';
 
@@ -13,6 +16,7 @@ const Transaction = () => {
 		const [transactionSubType, setTransactionSubType] = useState('RENT');
     const [result, setResult] = useState('');
     const [loading, setLoading] = useState(true);
+    const [transactionDate, setTransactionDate] = useState(new Date());
 
     const onValue1Change = (event) => {
 			setDescription(event.target.value);
@@ -33,7 +37,13 @@ const Transaction = () => {
     const onSubmit = () => {
         setLoading(true);
         setResult('');
-        axios.post(`http://localhost:8080/api/v1/accounts/1/transactions`, { description, amount, transactionType, transactionSubType }, {
+        axios.post(`http://localhost:8080/api/v1/accounts/1/transactions`, {
+            description, 
+            amount, 
+            transactionType, 
+            transactionSubType, 
+            transactionDate 
+        }, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -67,14 +77,25 @@ const Transaction = () => {
                     </Form.Select>
                 </Form.Group>
 
-								<Form.Group className="mb-3" controlId="value1">
+				<Form.Group className="mb-3" controlId="value1">
                     <Form.Label>Transaction Sub Type</Form.Label>
                     <Form.Select aria-label="Select Sub Type" onChange={onValue4Change}>
                         <option value="RENT">Rent</option>
                         <option value="GROCERY">Grocery</option>
+                        <option value="SNACK">Snack</option>
+                        <option value="EATOUT">Eatout</option>
+                        <option value="SHOPPING">Shopping</option>
+                        <option value="SALARY">Salary</option>
+                        <option value="TRANSFER">Transfer</option>
+                        <option value="RETURN">Return</option>
+                        <option value="CASHBACK">Cashback</option>
+                        <option value="MISCELLANOUS">Miscellanous</option>
                     </Form.Select>
                 </Form.Group>
-
+                <Form.Group className="mb-3" controlId="date" >
+                    <label class="form-label" for="value2">Transaction Date</label>
+                    <DatePicker className="form-control" selected={transactionDate} dateFormat="yyyy-MM-dd" onChange={(date) => setTransactionDate(date)} />
+                </Form.Group>
                 <Button variant="primary" onClick={onSubmit}>
                     Submit
                 </Button>

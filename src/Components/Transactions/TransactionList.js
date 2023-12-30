@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 import axios from 'axios';
 import moment from 'moment';
 
@@ -7,9 +8,11 @@ import Link from 'react-bootstrap/NavLink';
 
 const TransactionList = () => {
 	let [transactions, setTransactions] = useState([]);
+	const [searchParams] = useSearchParams();
+	const id = searchParams.get("id");
 
 	useEffect(() => {
-		axios.get('http://localhost:8080/api/v1/accounts/1/transactions')
+		axios.get(`http://localhost:8080/api/v1/accounts/${id}/transactions`)
 		.then((response) => {
 			setTransactions(response.data);
 		})
@@ -28,7 +31,7 @@ const TransactionList = () => {
                         <td>{transaction.amount}</td>
 						<td>{transaction.transactionType}</td>
                         <td>{transaction.transactionSubType}</td>
-                        <td>{moment(transaction.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{moment(transaction.transactionDate).format('MMMM Do YYYY')}</td>
 					</tr>
 				)
 			})
@@ -55,7 +58,7 @@ const TransactionList = () => {
                         <th>Amount</th>
                         <th>Type</th>
                         <th>Sub Type</th>
-                        <th>Created At</th>
+                        <th>Transaction Date</th>
 					</tr>
 			</thead>
 			<tbody>

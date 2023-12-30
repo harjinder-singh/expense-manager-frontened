@@ -13,3 +13,6 @@
     margin-top: 10px;
     border-radius: 5px;
 }
+.react-datepicker-wrapper {
+    display: block !important;
+}
