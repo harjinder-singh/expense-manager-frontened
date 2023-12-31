@@ -11,7 +11,7 @@ const AccountsList = ({accounts}) => {
 	}
 
     return (
-		<div className='account-cards'>
+		<div className='cards'>
 			{ accounts.length > 0 && displayCards()}
 		</div>
     )

@@ -4,12 +4,14 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import DatePicker from "react-datepicker";
+import { useParams } from 'react-router-dom';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 const AddTransactions = () => {
     const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
+    const { id } = useParams();
     
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
@@ -23,7 +25,7 @@ const AddTransactions = () => {
 
     const onSubmit = () => {
         setLoading(true);
-        axios.post(`http://localhost:8080/api/v1/accounts/1/transactions`, {
+        axios.post(`http://localhost:8080/api/v1/accounts/${id}/transactions`, {
             description, 
             amount, 
             transactionType, 
@@ -41,12 +43,15 @@ const AddTransactions = () => {
             setTransactionType('DEBIT');
 	        setTransactionSubType('RENT');
             setTransactionDate(new Date());
+        })
+        .catch((error) => {
+            alert("Something Went Wrong!");
         });
     }
 
     return (
         <>      
-            <div className='add-transaction-btn'>
+            <div className='add-entity-btn'>
                 <Button variant="primary" className="form-button" onClick={handleShow}>
                     Add Transaction
                 </Button>
@@ -56,32 +61,32 @@ const AddTransactions = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Add Transaction</Modal.Title>
                 </Modal.Header>
-                <div className="transaction-form-section">
+                <div className="entity-form-section">
                     
-                    <Form className='transaction-form'>
-                        <Form.Group className="mb-3" controlId="value1">
+                    <Form className='entity-form'>
+                        <Form.Group className="mb-3" controlId="description">
                             <Form.Label>Description</Form.Label>
-                            <Form.Control type="text" placeholder="Enter value" value={description} onChange={(event) => setDescription(event.target.value)} />
+                            <Form.Control type="text" placeholder="Enter description" value={description} onChange={(event) => setDescription(event.target.value)} />
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="value2">
+                        <Form.Group className="mb-3" controlId="amount">
                             <Form.Label>Amount</Form.Label>
-                            <Form.Control type="number" placeholder="Enter value" value={amount} onChange={(event) => setAmount(event.target.value)} />
+                            <Form.Control type="number" placeholder="Enter amount" value={amount} onChange={(event) => setAmount(event.target.value)} />
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="value1">
+                        <Form.Group className="mb-3" controlId="transaction-type">
                             <Form.Label>Transaction Type</Form.Label>
                             <Form.Select 
-                                aria-label="Select Type" 
+                                aria-label="Select transaction type" 
                                 onChange={(event) => setTransactionType(event.target.value)}>
                                 <option value="DEBIT">Debit</option>
                                 <option value="CREDIT">Credit</option>
                             </Form.Select>
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="value1">
+                        <Form.Group className="mb-3" controlId="transaction-sub-type">
                             <Form.Label>Transaction Sub Type</Form.Label>
-                            <Form.Select aria-label="Select Sub Type" onChange={(event) => setTransactionSubType(event.target.value)}>
+                            <Form.Select aria-label="Select trasaction sub type" onChange={(event) => setTransactionSubType(event.target.value)}>
                                 <option value="RENT">Rent</option>
                                 <option value="GROCERY">Grocery</option>
                                 <option value="SNACK">Snack</option>
@@ -94,10 +99,12 @@ const AddTransactions = () => {
                                 <option value="MISCELLANOUS">Miscellanous</option>
                             </Form.Select>
                         </Form.Group>
+                        
                         <Form.Group className="mb-3" controlId="date" >
-                            <label className="form-label" htmlFor="value2">Transaction Date</label>
+                            <Form.Label className="form-label">Transaction Date</Form.Label>
                             <DatePicker className="form-control" selected={transactionDate} dateFormat="yyyy-MM-dd" onChange={(date) => setTransactionDate(date)} />
                         </Form.Group>
+                        
                         <div className="button">
                             <Button variant="primary" className="form-button" onClick={onSubmit}>
                                 Submit

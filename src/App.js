@@ -6,14 +6,16 @@ import Layout from './Pages/Layout/Layout';
 import Accounts from './Components/Accounts/Accounts';
 import Transaction from './Components/Transactions/Transactions';
 import LineChart from "./Components/Charts/LineChart";
+import Users from "./Components/Users/Users";
 
 function App() {
   return (
     <>
-    <BrowserRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />} >
-            <Route path="accounts" element={<Accounts />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/:id/accounts" element={<Accounts />} />
             <Route path="accounts/:id/transactions" element={<Transaction />} />
             <Route path="charts" element={<LineChart />} />
           </Route>

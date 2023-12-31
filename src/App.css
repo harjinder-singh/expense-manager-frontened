@@ -9,3 +9,70 @@
     font-weight: 600;
     color: whitesmoke;
 }
+
+.info-card {
+    padding: 20px 10px;
+    background-color: cadetblue;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 100%;
+    color: whitesmoke;
+    text-align: center;
+    font-weight: 600;
+    font-size: larger;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.add-entity-btn {
+    padding: 20px;
+    width: 100%;
+    direction: rtl;
+}
+
+
+.entity-form-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    background-color: beige;
+    border-radius: 10px;
+}
+
+.entity-form {
+    width: 100%;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 20px;
+    column-gap: 20px;
+}
+
+.card {
+    background-color: beige;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-size: larger;
+    font-weight: 600;
+}
+
+.card-title {
+    font-size: large;
+    font-weight: 400;
+}
+
+.card-text {
+    margin-bottom: 0.5rem;
+}
