@@ -1,18 +1,11 @@
-.tab-form {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    width: 50%;
-    margin-left: 40px;
-}
-
-.info-card {
-    padding: 20px 10px;
-    background-color: beige;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    border-radius: 5px;
-}
 .react-datepicker-wrapper {
     display: block !important;
+}
+
+.form-button {
+    background-color: cadetblue;
+    border: none;
+    font-size: medium;
+    font-weight: 600;
+    color: whitesmoke;
 }
