@@ -9,21 +9,58 @@ import './Accounts.css';
 
 const Accounts = () => {
 	let [accounts, setAccounts] = useState([]);
-	const { id } = useParams();
+	const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    
+    const [balance, setBalance] = useState(0);
+    const [accountType, setAccountType] = useState('CHEQUING');
 
 	useEffect(() => {
-		axios.get(`http://localhost:8080/api/v1/users/${id}/accounts`)
+		getAccounts(id);
+	}, [id]);
+
+	const getAccounts = (userId) => {
+		axios.get(`http://localhost:8080/api/v1/users/${userId}/accounts`)
 		.then((response) => {
 			setAccounts(response.data);
 		})
 		.catch((error) => {
 			console.log(error);
 		});
-	}, [id]);
+	}
+
+	const onAddAccountSubmit = (balance, accountType) => {
+        setLoading(true);
+        axios.post(`http://localhost:8080/api/v1/users/${id}/accounts`, {
+            balance,  
+            accountType
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {
+            setLoading(false);
+            setBalance(0);
+            setAccountType('CHEQUING');
+			getAccounts(id);
+        })
+        .catch((error) => {
+            alert("Something Went Wrong!");
+        });
+    }
 
 	return (
 		<>
-			<AddAccount></AddAccount>
+			<AddAccount 
+				onAddAccountSubmit={onAddAccountSubmit}
+				balance={balance}
+				accountType={accountType}
+				loading={loading}
+				setBalance={setBalance}
+				setAccountType={setAccountType}
+			>
+			</AddAccount>
 			<AccountsList accounts={accounts}></AccountsList>
 		</>
 	);

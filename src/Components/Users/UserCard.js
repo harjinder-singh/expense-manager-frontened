@@ -15,7 +15,7 @@ function UserCard({user}) {
           </h6>
         </div>
       </Card.Body>
-      <Card.Footer className="text-muted">Opened on: {moment(user.createdAt).format('MMMM Do YYYY')}</Card.Footer>
+      <Card.Footer className="text-muted">Created on: {moment(user.createdAt).format('MMMM Do YYYY')}</Card.Footer>
     </Card>
   );
 }

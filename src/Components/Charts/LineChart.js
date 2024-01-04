@@ -1,4 +1,6 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,6 +26,30 @@ ChartJS.register(
 );
 
 let LineChart = () => {
+
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const [datasets, setDatasets] = useState([{
+    "label": "Test",
+    "data": [0,0],
+    "borderColor" : 'rgb(255, 99, 132)',
+    "backgroundColor" :'rgba(255, 99, 132, 0.5)'
+  }]);
+
+  useEffect(() => {
+	  getTransactions(2);
+	}, []);
+
+	const getTransactions = (accountId) => {
+		axios.get(`http://localhost:8080/api/v1/accounts/${accountId}/transactionsForChart`)
+		.then((response) => {
+			console.log(response.data);
+      getDataset(response.data);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+	}
+  
   const options = {
     responsive: true,
     plugins: {
@@ -44,24 +70,26 @@ let LineChart = () => {
     },
   };
   
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const getDataset = (data) => {
+    let finalObj = Object.keys(data).map(type => {
+      let dataSetObj = {};
+      dataSetObj["label"] = type;
+      let monthlyValues = [];
+      labels.forEach(label => {
+        !data[type][label] ? (monthlyValues.push(0)) : (monthlyValues.push(data[type][label]))
+      })
+      dataSetObj["data"] = monthlyValues;
+      dataSetObj["borderColor"] = 'rgb(255, 99, 132)';
+      dataSetObj["backgroundColor"] = 'rgba(255, 99, 132, 0.5)';
+      return dataSetObj;
+    });
+    console.log(finalObj);
+    setDatasets(finalObj);
+  }
   
   const data = {
     labels,
-    datasets: [
-      {
-        label: 'Shopping',
-        data: [5, 60, 150, 4, 700, 9, 600, 9, 900, 600, 324, 453],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Salary',
-        data: [555, 66, 650, 45, 200, 63, 126, 90, 61, 400, 30, 912],
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
-    ],
+    datasets
   };
 
   return (

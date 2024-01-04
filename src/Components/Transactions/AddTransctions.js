@@ -2,51 +2,44 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import axios from 'axios';
 import DatePicker from "react-datepicker";
-import { useParams } from 'react-router-dom';
+import { transactionSubTypeList } from '../../Utils/Utils';
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const AddTransactions = () => {
-    const [loading, setLoading] = useState(true);
+const AddTransactions = ({
+        onAddTransactionSubmit,
+        loading,
+        description,
+        amount, 
+        transactionType,
+        transactionSubType, 
+        transactionDate,
+        setAmount,
+        setDescription,
+        setTransactionType,
+        setTransactionSubType,
+        setTransactionDate
+    }) => {
     const [show, setShow] = useState(false);
-    const { id } = useParams();
-    
-    const [description, setDescription] = useState('');
-    const [amount, setAmount] = useState('');
-    const [transactionType, setTransactionType] = useState('DEBIT');
-	const [transactionSubType, setTransactionSubType] = useState('RENT');
-    const [transactionDate, setTransactionDate] = useState(new Date());
-    
+
     const handleClose = () => setShow(false);
 
     const handleShow = () => setShow(true);
 
     const onSubmit = () => {
-        setLoading(true);
-        axios.post(`http://localhost:8080/api/v1/accounts/${id}/transactions`, {
+        onAddTransactionSubmit(
             description, 
             amount, 
             transactionType, 
             transactionSubType, 
-            transactionDate 
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            transactionDate );
+    }
+
+    const getTransactionSubType = () => {
+        return transactionSubTypeList.map((type) => {
+            return <option value={type}>{type}</option>
         })
-        .then(res => {
-            setLoading(false);
-            setDescription('');
-            setAmount('');
-            setTransactionType('DEBIT');
-	        setTransactionSubType('RENT');
-            setTransactionDate(new Date());
-        })
-        .catch((error) => {
-            alert("Something Went Wrong!");
-        });
     }
 
     return (
@@ -77,26 +70,20 @@ const AddTransactions = () => {
                         <Form.Group className="mb-3" controlId="transaction-type">
                             <Form.Label>Transaction Type</Form.Label>
                             <Form.Select 
-                                aria-label="Select transaction type" 
+                                aria-label="Select transaction type"
+                                value={transactionType} 
                                 onChange={(event) => setTransactionType(event.target.value)}>
-                                <option value="DEBIT">Debit</option>
-                                <option value="CREDIT">Credit</option>
+                                <option value="DEBIT">DEBIT</option>
+                                <option value="CREDIT">CREDIT</option>
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="transaction-sub-type">
                             <Form.Label>Transaction Sub Type</Form.Label>
-                            <Form.Select aria-label="Select trasaction sub type" onChange={(event) => setTransactionSubType(event.target.value)}>
-                                <option value="RENT">Rent</option>
-                                <option value="GROCERY">Grocery</option>
-                                <option value="SNACK">Snack</option>
-                                <option value="EATOUT">Eatout</option>
-                                <option value="SHOPPING">Shopping</option>
-                                <option value="SALARY">Salary</option>
-                                <option value="TRANSFER">Transfer</option>
-                                <option value="RETURN">Return</option>
-                                <option value="CASHBACK">Cashback</option>
-                                <option value="MISCELLANOUS">Miscellanous</option>
+                            <Form.Select aria-label="Select trasaction sub type"
+                                value={transactionSubType}
+                                onChange={(event) => setTransactionSubType(event.target.value)}>
+                                {getTransactionSubType()}
                             </Form.Select>
                         </Form.Group>
                         

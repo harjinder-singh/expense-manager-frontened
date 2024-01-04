@@ -1,0 +1,3 @@
+export const transactionSubTypeList = [
+    "RENT", "GROCERY", "SHOPPING", "EATOUT", "SALARY", "TRANSFER", "SNACK", "RETURN", "CASHBACK", "UTILITY", "TRANSPORTATION","MISCELLANEOUS"
+];

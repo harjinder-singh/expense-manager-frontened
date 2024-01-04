@@ -9,10 +9,9 @@ const Header = () => {
   return (
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Brand href="#home">Expense Manager</Brand>
+          <Brand href="/users">Expense Manager</Brand>
           <Nav className="justify-content-end">
           <Link href="/users" className={ url.includes("users") ?  'active' : ''}>Users</Link>
-            {/* <Link href="/accounts" className={ url.includes("accounts") ?  'active' : ''}>Accounts</Link> */}
             <Link href="/charts" className={ url.includes("charts") ?  'active' : ''}>Charts</Link>
           </Nav>
         </Container>
