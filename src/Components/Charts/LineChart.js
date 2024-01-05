@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Colors
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -22,7 +23,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Colors
 );
 
 let LineChart = () => {
@@ -67,6 +69,9 @@ let LineChart = () => {
           size: 24
         }
       },
+      colors: {
+        enabled: true
+      }
     },
   };
   
@@ -79,8 +84,6 @@ let LineChart = () => {
         !data[type][label] ? (monthlyValues.push(0)) : (monthlyValues.push(data[type][label]))
       })
       dataSetObj["data"] = monthlyValues;
-      dataSetObj["borderColor"] = 'rgb(255, 99, 132)';
-      dataSetObj["backgroundColor"] = 'rgba(255, 99, 132, 0.5)';
       return dataSetObj;
     });
     console.log(finalObj);
