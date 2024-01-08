@@ -56,7 +56,7 @@ const AddTransactions = ({
                 </Modal.Header>
                 <div className="entity-form-section">
                     
-                    <Form className='entity-form'>
+                    <Form className='entity-form' >
                         <Form.Group className="mb-3" controlId="description">
                             <Form.Label>Description</Form.Label>
                             <Form.Control type="text" placeholder="Enter description" value={description} onChange={(event) => setDescription(event.target.value)} />

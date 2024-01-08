@@ -21,21 +21,23 @@ const TransactionList = ({transactions}) => {
 	}
 
 	return (
-		<Table striped bordered hover>
-			<thead>
-					<tr>
-                        <th>Transaction No</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Sub Type</th>
-                        <th>Transaction Date</th>
-					</tr>
-			</thead>
-			<tbody>
-				{ transactions.length > 0 && getTableBody() }
-			</tbody>
-		</Table>
+		<div className='transaction-list'>
+			<Table striped bordered hover>
+				<thead>
+						<tr>
+							<th>Transaction No</th>
+							<th>Description</th>
+							<th>Amount</th>
+							<th>Type</th>
+							<th>Sub Type</th>
+							<th>Transaction Date</th>
+						</tr>
+				</thead>
+				<tbody>
+					{ transactions.length > 0 && getTableBody() }
+				</tbody>
+			</Table>
+		</div>
 	);
 }
 

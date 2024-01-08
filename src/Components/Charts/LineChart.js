@@ -38,7 +38,7 @@ let LineChart = () => {
   }]);
 
   useEffect(() => {
-	  getTransactions(2);
+	  getTransactions(1);
 	}, []);
 
 	const getTransactions = (accountId) => {
