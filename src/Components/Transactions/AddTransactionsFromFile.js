@@ -5,7 +5,9 @@ import Button from 'react-bootstrap/Button';
 
 const AddTransactionsFromFile = ({
         loading, 
-        handleFileUpload, 
+        handleFileUpload,
+        formatType,
+        setFormatType, 
         onAddTransactionsSubmit
     }) => {
     const [show, setShow] = useState(false);
@@ -31,6 +33,16 @@ const AddTransactionsFromFile = ({
                         <Form.Label>Upload CSV file</Form.Label>
                         <Form.Control type="file" onChange={handleFileUpload}/>
                     </Form.Group>
+                    <Form.Group className="mb-3" controlId="format-type">
+                            <Form.Label>Format Type</Form.Label>
+                            <Form.Select 
+                                aria-label="Select format type"
+                                value={formatType} 
+                                onChange={(event) => setFormatType(event.target.value)}>
+                                <option value="MM/dd/yyyy">Scotiabank</option>
+                                <option value="yyyy-MM-dd">CIBC</option>
+                            </Form.Select>
+                        </Form.Group>
                     <div className="button">
                         <Button variant="primary" className="form-button" type='submit'>
                             Submit

@@ -21,6 +21,7 @@ const Transaction = () => {
     const [transactionType, setTransactionType] = useState('DEBIT');
 	const [transactionSubType, setTransactionSubType] = useState('RENT');
     const [transactionDate, setTransactionDate] = useState(new Date());
+	const [formatType, setFormatType] = useState("yyyy-MM-dd");
 
 	const [file, setFile] = useState('');
 
@@ -79,7 +80,8 @@ const Transaction = () => {
 		setLoadingForFileUpload(true);
 		axios.post(`http://localhost:8080/api/v1/accounts/${id}/uploadCSV`,
 		{
-			file
+			file,
+			formatType
 		}, 
 		{
 			headers: {
@@ -91,6 +93,9 @@ const Transaction = () => {
 		  setLoadingForFileUpload(false);
 		  setFile('');
 		  getTransactions(id);
+		})
+		.catch(e => {
+			alert(`Error uploading CSV file. ${e.message}`);
 		});
 	
 	  }
@@ -116,6 +121,8 @@ const Transaction = () => {
 					<AddTransactionsFromFile
 						loading={loadingForFileUpload}
 						handleFileUpload={handleFileUpload}
+						formatType={formatType}
+						setFormatType={setFormatType}
 						onAddTransactionsSubmit={onAddTransactionsSubmit}
 					></AddTransactionsFromFile>
 				</div>
