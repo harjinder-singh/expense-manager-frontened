@@ -1,20 +1,29 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from 'react-redux'
+import { apiSlice } from '../App/api/apiSlice';
 
 import TransactionList from './TransactionList';
 import AddTransactions from "./AddTransctions";
 import AddTransactionsFromFile from './AddTransactionsFromFile';
+import { 
+	useGetTransactionsQuery, 
+	useAddTransactionMutation,
+	useAddTransactionsfromFileMutation
+ } from './transactionsApiSlice';
+
+import {} from '../App/api/apiSlice'
 
 import './Transactions.css';
 
 const Transaction = () => {
-    let [transactions, setTransactions] = useState([]);
 	const { id } = useParams();
-	const [loading, setLoading] = useState(true);
-	const [loadingForFileUpload, setLoadingForFileUpload] = useState(true);
+	const { data: transactions, isLoading } = useGetTransactionsQuery(id);
+	const [addTransaction, {isLoading: addTransactionLoading}] = useAddTransactionMutation();
+	const [addTransactionFromFile, {isLoading: addTransactionsFileLoading}] = useAddTransactionsfromFileMutation();
+	const dispatch = useDispatch()
     
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
@@ -29,74 +38,46 @@ const Transaction = () => {
 		setFile(event.target.files[0])
 	}
 
-	useEffect(() => {
-		getTransactions(id);
-	}, [id]);
-
-	const getTransactions = (accountId) => {
-		axios.get(`http://localhost:8080/api/v1/accounts/${accountId}/transactions`)
-		.then((response) => {
-			setTransactions(response.data);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-	}
-
-	const onAddTransactionSubmit = (
+	const onAddTransactionSubmit = async (
 		description, 
 		amount, 
 		transactionType, 
 		transactionSubType, 
 		transactionDate ) => {
-		setLoading(true);
-        axios.post(`http://localhost:8080/api/v1/accounts/${id}/transactions`, {
-            description, 
-            amount, 
-            transactionType, 
-            transactionSubType, 
-            transactionDate 
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            setLoading(false);
-            setDescription('');
+		try{
+			await addTransaction({
+				id, 
+				description, 
+				amount, 
+				transactionType, 
+				transactionSubType, 
+				transactionDate
+			}).unwrap();
+			dispatch(apiSlice.util.invalidateTags(['Account']));
+			setDescription('');
             setAmount('');
             setTransactionType('DEBIT');
 	        setTransactionSubType('RENT');
             setTransactionDate(new Date());
-			getTransactions(id);
-        })
-        .catch((error) => {
+
+		} catch(error) {
             alert("Something Went Wrong!");
-        });
+        };
 	}
 
-	const onAddTransactionsSubmit = (event) => {
+	const onAddTransactionsSubmit = async (event) => {
 		event.preventDefault();
-		setLoadingForFileUpload(true);
-		axios.post(`http://localhost:8080/api/v1/accounts/${id}/uploadCSV`,
-		{
-			file,
-			formatType
-		}, 
-		{
-			headers: {
-			  'content-type': 'multipart/form-data',
-			},
-		})
-		.then((res) => {
-		  console.log(res.data);
-		  setLoadingForFileUpload(false);
-		  setFile('');
-		  getTransactions(id);
-		})
-		.catch(e => {
+		try{
+			let bodyFormData = new FormData();
+            bodyFormData.append('file', file)
+            bodyFormData.append('formatType', formatType);
+			bodyFormData.append('Content-Type', file.type);
+			await addTransactionFromFile({id, bodyFormData}).unwrap();
+			setFile('');
+
+		} catch(e) {
 			alert(`Error uploading CSV file. ${e.message}`);
-		});
+		};
 	
 	  }
 
@@ -105,7 +86,7 @@ const Transaction = () => {
 				<div className='buttons-array'>
 					<AddTransactions
 						onAddTransactionSubmit={onAddTransactionSubmit}
-						loading={loading}
+						loading={addTransactionLoading}
 						description={description}
 						amount={amount} 
 						transactionType={transactionType} 
@@ -119,14 +100,14 @@ const Transaction = () => {
 					>
 					</AddTransactions>
 					<AddTransactionsFromFile
-						loading={loadingForFileUpload}
+						loading={addTransactionsFileLoading}
 						handleFileUpload={handleFileUpload}
 						formatType={formatType}
 						setFormatType={setFormatType}
 						onAddTransactionsSubmit={onAddTransactionsSubmit}
 					></AddTransactionsFromFile>
-				</div>
-				<TransactionList transactions={transactions}></TransactionList>
+				</div> 
+				{!isLoading && <TransactionList transactions={transactions}></TransactionList> }
 			</>
     );
 }

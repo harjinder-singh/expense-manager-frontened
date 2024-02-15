@@ -1,6 +1,4 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +13,7 @@ import {
 import { Line } from 'react-chartjs-2';
 
 import './LineChart.css';
+import { useGetTransactionsForChartQuery } from './chartApiSlice';
 
 ChartJS.register(
   CategoryScale,
@@ -29,7 +28,8 @@ ChartJS.register(
 
 let LineChart = () => {
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const labels = useMemo(() => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], []);
+  
   const [datasets, setDatasets] = useState([{
     "label": "Test",
     "data": [0,0],
@@ -37,20 +37,27 @@ let LineChart = () => {
     "backgroundColor" :'rgba(255, 99, 132, 0.5)'
   }]);
 
-  useEffect(() => {
-	  getTransactions(1);
-	}, []);
+  const { data: transactions, isLoading } = useGetTransactionsForChartQuery(1);
+  
+  const getDataset = useCallback((data) => {
+    let finalObj = Object.keys(data).map(type => {
+      let dataSetObj = {};
+      dataSetObj["label"] = type;
+      let monthlyValues = [];
+      labels.forEach(label => {
+        !data[type][label] ? (monthlyValues.push(0)) : (monthlyValues.push(data[type][label]))
+      })
+      dataSetObj["data"] = monthlyValues;
+      return dataSetObj;
+    });
+    setDatasets(finalObj);
+  }, [labels]);
 
-	const getTransactions = (accountId) => {
-		axios.get(`http://localhost:8080/api/v1/accounts/${accountId}/transactionsForChart`)
-		.then((response) => {
-			console.log(response.data);
-      getDataset(response.data);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-	}
+  useEffect(() => {
+    if(!isLoading){
+      getDataset(transactions);
+    }
+  }, [isLoading, transactions, getDataset])
   
   const options = {
     responsive: true,
@@ -74,21 +81,6 @@ let LineChart = () => {
       }
     },
   };
-  
-  const getDataset = (data) => {
-    let finalObj = Object.keys(data).map(type => {
-      let dataSetObj = {};
-      dataSetObj["label"] = type;
-      let monthlyValues = [];
-      labels.forEach(label => {
-        !data[type][label] ? (monthlyValues.push(0)) : (monthlyValues.push(data[type][label]))
-      })
-      dataSetObj["data"] = monthlyValues;
-      return dataSetObj;
-    });
-    console.log(finalObj);
-    setDatasets(finalObj);
-  }
   
   const data = {
     labels,

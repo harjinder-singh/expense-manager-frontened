@@ -1,6 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import moment from 'moment';
+import { Link } from "react-router-dom";
 
 function AccountCard({account}) {
   return (
@@ -11,7 +12,7 @@ function AccountCard({account}) {
         <Card.Text>Current Balance</Card.Text> <h4>{account.balance.toFixed(2)}</h4>
         <div className="col col-sm align-self-center">
           <h6 className="text-center">
-            <Button variant="primary" className='form-button' href={`/accounts/${account.id}/transactions`}>Transactions</Button>
+            <Button variant="primary" className='form-button' as={Link} to={`/accounts/${account.id}/transactions`}>Transactions</Button>
           </h6>
         </div>
       </Card.Body>

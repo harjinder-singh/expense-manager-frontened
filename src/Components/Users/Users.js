@@ -1,70 +1,24 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'
 
-import AddUser from './AddUser';
-import UsersList from './UsersList';
+import { useGetUserQuery } from './usersApiSlice';
+import { selectCurrentUserEmail } from '../Auth/authSlice'
+import { useEffect } from 'react';
 
 const Users = () => {
-
-	const [users, setUsers] = useState([]);
-	const [loading, setLoading] = useState(true);
-    
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-
+	const email = useSelector(selectCurrentUserEmail)
+	const {data: user, isLoading} = useGetUserQuery(email)
+	const navigate = useNavigate()
+	
 	useEffect(() => {
-		getUsers();
-	}, []);
-
-	const getUsers = () => {
-		axios.get('http://localhost:8080/api/v1/users')
-		.then((response) => {
-			setUsers(response.data);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-	}
-
-	const onAddUserSubmit = () => {
-		setLoading(true);
-        axios.post(`http://localhost:8080/api/v1/users`, {
-            firstName,  
-            lastName,
-            email
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            setLoading(false);
-            setFirstName('');
-            setLastName('');
-            setEmail('');
-			getUsers();
-        })
-        .catch((error) => {
-            alert("Something Went Wrong!");
-        });
-	}
+		!isLoading &&
+			navigate(`/users/${user.id}/accounts`)
+	}, [isLoading, navigate, user])
+	
 
 	return (
 		<>
-			<AddUser 
-				onAddUserSubmit={onAddUserSubmit}
-				firstName={firstName}
-				lastName={lastName}
-				email={email}
-				loading={loading}
-				setFirstName={setFirstName}
-				setLastName={setLastName}
-				setEmail={setEmail}
-				setLoading={setLoading}
-			>
-			</AddUser>
-			<UsersList users={users}></UsersList>
+			<h1>Loading...</h1>
 		</>
 	);
 	
